@@ -52,6 +52,7 @@ find_package(KF5ThreadWeaver ${KF5_DEP_VERSION} REQUIRED)
 ecm_setup_qtplugin_macro_names(
     JSON_NONE
         "K_EXPORT_PLASMA_RUNNER"
+        "K_EXPORT_PLASMA_RUNNER_WITH_JSON"
         "K_EXPORT_RUNNER_CONFIG"
     CONFIG_CODE_VARIABLE
         PACKAGE_SETUP_AUTOMOC_VARIABLES

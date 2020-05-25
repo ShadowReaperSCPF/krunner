@@ -27,6 +27,7 @@
 #include <kconfiggroup.h>
 #include <kservice.h>
 #include <kplugininfo.h>
+#include <kpluginmetadata.h>
 
 #include "krunner_export.h"
 #include "querymatch.h"
@@ -240,10 +241,19 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
           */
         QString description() const;
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 72)
         /**
          * @return the plugin info for this runner
+         * @deprecated since 5.72, use metaDataV2() instead
          */
+        KRUNNER_DEPRECATED_VERSION(5, 72, "Use metaDataV2() instead")
         KPluginInfo metadata() const;
+#endif
+
+        /**
+         * @return the plugin metadata for this runner
+         */
+        KPluginMetaData metadataV2() const;
 
         /**
          * @return the icon for this Runner
@@ -323,7 +333,11 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
         friend class RunnerManagerPrivate;
 
         explicit AbstractRunner(QObject *parent = nullptr, const QString &path = QString());
+#if KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
         explicit AbstractRunner(const KService::Ptr service, QObject *parent = nullptr);
+#endif
+        /// @since 5.72
+        explicit AbstractRunner(const KPluginMetaData &pluginMetaData, QObject *parent = nullptr);
 
         AbstractRunner(QObject *parent, const QVariantList &args);
 
@@ -497,6 +511,20 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
 #define K_EXPORT_PLASMA_RUNNER( libname, classname )     \
 K_PLUGIN_FACTORY(factory, registerPlugin<classname>();) \
 K_EXPORT_PLUGIN_VERSION(PLASMA_VERSION)
+
+/**
+ * \relates AbstractRunner
+ *
+ * Registers a runner plugin with JSON metadata.
+ *
+ * \param classname name of the AbstractRunner derived class.
+ * \param jsonFile name of the JSON file to be compiled into the plugin as metadata
+ *
+ * @since 5.72
+ */
+#define K_EXPORT_PLASMA_RUNNER_WITH_JSON(classname, jsonFile) \
+    K_PLUGIN_FACTORY_WITH_JSON(classname ## Factory, jsonFile, registerPlugin<classname>();) \
+    K_EXPORT_PLUGIN_VERSION(PLASMA_VERSION)
 
 /**
  * These plugins are Used by the plugin selector dialog to show

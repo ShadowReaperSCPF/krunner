@@ -1,4 +1,8 @@
-add_subdirectory(declarative)
+if(NOT EXCLUDE_DEPRECATED_BEFORE_AND_AT STREQUAL "CURRENT" AND
+   EXCLUDE_DEPRECATED_BEFORE_AND_AT VERSION_LESS 5.0.0)
+    # deprecated plugin org.kde.runnermodel
+    add_subdirectory(declarative)
+endif()
 
 set (KF5Runner_SRCS
     abstractrunner.cpp
